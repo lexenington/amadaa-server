@@ -1,4 +1,5 @@
 import sys
+import os
 import time
 import schedule
 import cherrypy
@@ -21,7 +22,12 @@ def start():
 	this.logger.info('amadaa server starting')
 	amadaa.connection.add_observer(amadaa.node.connection_change)
 	schedule.every(1).minutes.do(amadaa.connection.check_internet_connection)
-	cherrypy.tree.mount(RootController(), "/")
+	cherrypy.tree.mount(RootController(), "/", {
+		'/static': {
+			'tools.staticdir.on': True,
+			'tools.staticdir.dir': os.path.join(os.getcwd(), 'static')
+		}
+	})
 	cherrypy.engine.start()
 	this.logger.info('amadaa server started')
 	while this.running:
