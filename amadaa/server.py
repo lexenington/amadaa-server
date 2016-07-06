@@ -22,6 +22,10 @@ def start():
 	this.logger.info('amadaa server starting')
 	amadaa.connection.add_observer(amadaa.node.connection_change)
 	schedule.every(1).minutes.do(amadaa.connection.check_internet_connection)
+	cherrypy.config.update({
+		'tools.sessions.on': True,
+		'tools.sessions.storage_type': 'ram'
+	})
 	cherrypy.tree.mount(RootController(), "/", {
 		'/static': {
 			'tools.staticdir.on': True,
