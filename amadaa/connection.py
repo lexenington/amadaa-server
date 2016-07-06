@@ -6,7 +6,7 @@ this.state = None
 this.observers = []
 
 def check_internet_connection():
-	"""" Check if we are connected to the Internet and inform observers
+	""" Check if we are connected to the Internet and inform observers
 	of any change in connectivity. """
 	try:
 		socket.setdefaulttimeout(3)
@@ -20,7 +20,7 @@ def check_internet_connection():
 	this.state = newstate	
 	
 def add_observer(ob):
-	"""" Add an observer.
+	""" Add an observer.
 	:param ob: the function to be called if internet connectivity goes up/down. """
 	if callable(ob):
 		this.observers.append(ob)
