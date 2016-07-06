@@ -2,5 +2,4 @@
 
 import amadaa.server
 
-server = amadaa.server.AmadaaServer()
-server.start()
+amadaa.server.start()
