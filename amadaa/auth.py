@@ -1,3 +1,6 @@
+import os
+import cherrypy
+from amadaa.base import Controller
 import amadaa.database
 
 def authenticate(username, password):
