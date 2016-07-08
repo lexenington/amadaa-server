@@ -1,5 +1,16 @@
+import os
 import uuid
+from jinja2 import Environment, FileSystemLoader
 
+class Controller:
+	def __init__(self):
+		self.view_dir = os.path.join(os.getcwd(), 'views')
+		
+	def render_template(self, tpl, template_vars={}):
+		env = Environment(loader = FileSystemLoader(self.view_dir))
+		t = env.get_template(tpl)
+		return t.render(template_vars)
+		
 class Model:
 	def __init__(self):
 		self._attribs = { 'id': uuid.UUID }
@@ -22,7 +33,7 @@ class Model:
 		if key[0] == '_':
 			super.__setattr(self, key, value)
 		elif key in self._attribs:
-			if isinstance(value, self._attrib[key]) or value = None:
+			if isinstance(value, self._attrib[key]) or value == None:
 				super.__setattr__(self, key, value)
 			else:
 				# TODO: appropriate exception class
