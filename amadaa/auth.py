@@ -9,3 +9,11 @@ def authenticate(username, password):
 			uid = cur.fetchone()
 	conn.close()
 	return uid
+
+def login_required(f):
+	def decorate(*args, **kwargs):
+		if cherrypy.session.get('user'):
+			return f(*args, **kwargs)
+		else:
+			raise cherrypy.HTTPRedirect('/auth/login')
+	return decorate
