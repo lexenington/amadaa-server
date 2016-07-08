@@ -6,7 +6,9 @@ import cherrypy
 import logging
 import amadaa.connection
 import amadaa.node
-from amadaa.root.controller import RootController
+from amadaa.root import RootController
+from amadaa.auth import AuthController
+from amadaa.dashboard.app import DashboardController
 
 this = sys.modules[__name__]
 this.running = False
@@ -32,6 +34,8 @@ def start():
 			'tools.staticdir.dir': os.path.join(os.getcwd(), 'static')
 		}
 	})
+	cherrypy.tree.mount(AuthController(), "/auth")
+	cherrypy.tree.mount(DashboardController(), "/dashboard")
 	cherrypy.engine.start()
 	this.logger.info('amadaa server started')
 	while this.running:
