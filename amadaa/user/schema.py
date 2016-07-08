@@ -1,7 +1,7 @@
 import uuid
 import psycopg2.extras
 import amadaa.database
-from amadaa.schema.utils import set_schema_version
+from amadaa.schema import set_schema_version
 
 conn = amadaa.database.connection()
 
