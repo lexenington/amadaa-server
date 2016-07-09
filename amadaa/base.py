@@ -34,7 +34,7 @@ class Model:
 		if key[0] == '_':
 			super.__setattr__(self, key, value)
 		elif key in self._attribs:
-			if isinstance(value, self._attrib[key]) or value == None:
+			if isinstance(value, self._attribs[key]) or value == None:
 				super.__setattr__(self, key, value)
 			else:
 				# TODO: appropriate exception class
