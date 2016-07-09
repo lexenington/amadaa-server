@@ -32,7 +32,7 @@ class Model:
 			
 	def __setattr__(self, key, value):
 		if key[0] == '_':
-			super.__setattr(self, key, value)
+			super.__setattr__(self, key, value)
 		elif key in self._attribs:
 			if isinstance(value, self._attrib[key]) or value == None:
 				super.__setattr__(self, key, value)
