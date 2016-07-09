@@ -6,7 +6,7 @@ import cherrypy
 import logging
 import amadaa.connection
 import amadaa.node
-from amadaa.root import RootController
+from amadaa.base import RootController
 from amadaa.auth import AuthController
 from amadaa.dashboard.app import DashboardController
 
