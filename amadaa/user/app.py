@@ -16,8 +16,13 @@ class User(Model):
 			'last_login': datetime,
 			'active': bool
 		})
+		self.username = None
+		self.password = None
+		self.date_created = None
+		self.last_login = None
+		self.active = None
 
-def get(self, id):
+	def get(self, id):
 		conn = amadaa.database.connection()
 		with conn:
 			with conn.cursor(cursor_factory=DictCursor) as cur:
