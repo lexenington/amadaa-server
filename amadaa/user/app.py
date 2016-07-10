@@ -33,3 +33,16 @@ class User(Model):
 				self.username = rec['username']
 				self.password = rec['password']
 		conn.close()
+
+	def get_by_username(self, username):
+		conn = amadaa.database.connection()
+		with conn:
+			with conn.cursor(cursor_factory=DictCursor) as cur:
+				cur.execute("""select * from am_user
+				where username = %s""", (username,))
+				rec = cur.fetchone()
+				self.id = rec['user_pk']
+				self.username = rec['username']
+				self.password = rec['password']
+				self.active = rec['active']
+		conn.close()
