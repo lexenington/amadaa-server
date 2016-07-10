@@ -43,16 +43,16 @@ class Model:
 			# TODO: appropriate exception class
 			raise Exception("set: no such attribute")
 			
-	def save():
+	def save(self):
 		if self.id == None:
 			self._insert()
 		else:
 			self._update()
 			
-	def _insert():
+	def _insert(self):
 		pass
 		
-	def _update():
+	def _update(self):
 		pass
 		
 class RootController:
