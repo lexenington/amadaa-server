@@ -46,3 +46,11 @@ class User(Model):
 				self.password = rec['password']
 				self.active = rec['active']
 		conn.close()
+
+	def _insert(self):
+		conn = amadaa.database.connection()
+		with conn:
+			with conn.cursor() as cur:
+				self.id = uuid.uuid4()
+				cur.execute("""insert into am_user(user_pk, username, password, active)
+				values(%s, %s, %s, %s)""", (self.id, self.username, self.password, self.active))
