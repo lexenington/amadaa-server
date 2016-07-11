@@ -61,3 +61,33 @@ class User(Model):
 			with conn.cursor() as cur:
 				cur.execute("""update am_user set username = %s, password = %s, active = %s
 				where user_pk = %s""", (self.username, self.password, self.active, self.id))
+
+class UserDirectory:
+	def __init__(self):
+		pass
+		
+	def id_exists(self, uid):
+		conn = amadaa.database.connection()
+		with conn:
+			with conn.cursor() as cur:
+				cur.execute("select * from am_user where user_pk = %s", (uid,))
+				rec = cur.fetchone()
+				if rec:
+					ret = True
+				else:
+					ret = False
+		conn.close()
+		return ret
+	
+	def username_exists(self, username):
+		conn = amadaa.database.connection()
+		with conn:
+			with conn.cursor() as cur:
+				cur.execute("select * from am_user where username = %s", (username,))
+				rec = cur.fetchone()
+				if rec:
+					ret = True
+				else:
+					ret = False
+		conn.close()
+		return ret
