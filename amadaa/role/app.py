@@ -36,7 +36,7 @@ class Role(Model):
 				rec = cur.fetchone()
 				self.id = rec['role_pk']
 				self.rolename = rec['rolename']
-				self.parent = rec['parent']
+				self.parent = rec['parent_fk']
 		conn.close()
 		
 	def _insert(self):
@@ -44,7 +44,7 @@ class Role(Model):
 		with conn:
 			with conn.cursor() as cur:
 				self.id = uuid.uuid4()
-				cur.execute("""insert into am_role(role_pk, rolename, parent)
+				cur.execute("""insert into am_role(role_pk, rolename, parent_fk)
 				values(%s, %s, %s)""", (self.id, self.rolename, self.parent))
 		conn.close()
 		
@@ -53,5 +53,5 @@ class Role(Model):
 		with conn:
 			with conn.cursor() as cur:
 				cur.execute("""update am_role set rolename = %s, parent = %s
-				where role_pk = %s""", (self.rolename, self.parent, self.id))
+				where role_pk = %s""", (self.rolename, self.parent_fk, self.id))
 		conn.close()
