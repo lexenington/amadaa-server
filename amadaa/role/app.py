@@ -3,6 +3,8 @@ import amadaa.database
 from psycopg2.extras import DictCursor, register_uuid
 from amadaa.base import Model
 
+register_uuid()
+
 class Role(Model):
 	def __init__(self):
 		super().__init__()
