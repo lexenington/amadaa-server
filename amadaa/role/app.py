@@ -55,3 +55,24 @@ class Role(Model):
 				cur.execute("""update am_role set rolename = %s, parent = %s
 				where role_pk = %s""", (self.rolename, self.parent_fk, self.id))
 		conn.close()
+
+class RoleDirectory:
+	def id_exists(self, id):
+		conn = amadaa.database.connection()
+		with conn:
+			with conn.cursor() as cur:
+				cur.execute("select * from am_role where role_pk = %s", (id,))
+				rec = cur.fetchone()
+				ret = True if rec else False
+		conn.close()
+		return ret
+
+	def rolename_exists(self, rolename):
+		conn = amadaa.database.connection()
+		with conn:
+			with conn.cursor() as cur:
+				cur.execute("select * from am_role where rolename = %s", (rolename,))
+				rec = cur.fetchone()
+				ret = True if rec else False
+		conn.close()
+		return ret
