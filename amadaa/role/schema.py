@@ -2,6 +2,7 @@ import uuid
 import psycopg2.extras
 import amadaa.database
 from amadaa.schema import set_schema_version
+from amadaa.role.app import RoleDirectory, Role
 
 conn = amadaa.database.connection()
 if not amadaa.database.table_exists('am_role'):
@@ -14,3 +15,9 @@ if not amadaa.database.table_exists('am_role'):
 			primary key(role_pk),
 			unique(rolename))""")
 	set_schema_version(__package__, 1)
+
+d = RoleDirectory()
+if not d.rolename_exists('Fruit'):
+	r = Role()
+	r.rolename = 'Fruit'
+	r.save()
