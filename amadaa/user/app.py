@@ -54,6 +54,7 @@ class User(Model):
 				self.id = uuid.uuid4()
 				cur.execute("""insert into am_user(user_pk, username, password, active)
 				values(%s, %s, %s, %s)""", (self.id, self.username, self.password, self.active))
+		conn.close()
 
 	def _update(self):
 		conn = amadaa.database.connection()
@@ -61,6 +62,7 @@ class User(Model):
 			with conn.cursor() as cur:
 				cur.execute("""update am_user set username = %s, password = %s, active = %s
 				where user_pk = %s""", (self.username, self.password, self.active, self.id))
+		conn.close()
 
 class UserDirectory:
 	def __init__(self):
