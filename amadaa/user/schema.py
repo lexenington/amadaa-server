@@ -2,7 +2,7 @@ import uuid
 import psycopg2.extras
 import amadaa.database
 from amadaa.schema import set_schema_version, has_schema_version
-from amadaa.user.app import Role, rolename_exists
+from amadaa.user.app import Role, User, rolename_exists, username_exists
 
 conn = amadaa.database.connection()
 if not has_schema_version(__package__):
@@ -37,15 +37,9 @@ if not rolename_exists('Fruit'):
 	r = Role(rolename='Fruit')
 	r.save()
 	
-# XXX: temporary
-try:
-	with conn:
-		with conn.cursor() as cur:
-			psycopg2.extras.register_uuid()
-			cur.execute("""insert into am_user(user_pk, username, password, active)
-			values(%s, %s, %s, %s)""", (uuid.uuid4(), 'lorenzo', 'foo', True))
-except Exception as e:
-	print(e)
+if not username_exists('amadaa'):
+	u = User(username='amadaa')
+	u.save()
 	
 conn.close()
 
