@@ -22,3 +22,16 @@ def table_exists(table, schema='public'):
 			ret = cur.fetchone()[0]
 	conn.close()
 	return ret
+
+def view_exists(view, schema='public'):
+	""" Check if a view exists, optionally within a particular schema. Return
+	True or False. """
+	conn = connection()
+	with conn:
+		with conn.cursor() as cur:
+			cur.execute("""select exists(
+			select 1 from information_schema.views
+			where table_schema = %s and table_name = %s)""", (schema, view))
+			exists = cur.fetchone()[0]
+	conn.close()
+	return exists
