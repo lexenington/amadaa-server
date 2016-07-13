@@ -4,8 +4,8 @@ import amadaa.database
 from amadaa.schema import set_schema_version, has_schema_version
 from amadaa.user.app import Role, rolename_exists
 
+conn = amadaa.database.connection()
 if not has_schema_version(__package__):
-	conn = amadaa.database.connection()
 	if not amadaa.database.table_exists('am_role'):
 		with conn:
 			with conn.cursor() as cur:
