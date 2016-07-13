@@ -30,7 +30,18 @@ if not has_schema_version(__package__):
 				primary key(user_pk),
 				unique(username)
 				)""")
-			
+
+	if not amadaa.database.table_exists('am_user_role'):
+		with conn:
+			with conn.cursor() as cur:
+				cur.execute("""create table am_user_role(
+					user_role_pk uuid,
+					user_fk uuid,
+					role_fk uuid,
+					primary key(user_role_pk),
+					unique(user_fk, role_fk)
+				)""")
+
 	set_schema_version(__package__, 1)
 
 if not rolename_exists('Fruit'):
@@ -40,9 +51,8 @@ if not rolename_exists('Fruit'):
 if not username_exists('amadaa'):
 	u = User(username='amadaa')
 	u.save()
-	
-conn.close()
 
+conn.close()
 
 
 
