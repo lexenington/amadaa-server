@@ -11,7 +11,7 @@ class Role(Model):
 		super().__init__(id)
 		self._attribs.update({
 			'rolename': str,
-			'parent': uuid.UUID
+			'parent': uuid.UUID,
 		})
 		self.rolename = rolename
 		self.parent = parent
@@ -160,3 +160,14 @@ def username_exists(username):
 				ret = False
 	conn.close()
 	return ret
+
+def user_has_role(username, rolename):
+	conn = amadaa.database.connection()
+	with conn:
+		with conn.cursor() as cur:
+			cur.execute(""""select * from am_user_role_view
+			where username = %s and rolename = %s""", (username, rolename,))
+			rec = cur.fetchone()
+			exists = True if rec else False
+			conn.close()
+			return exists
