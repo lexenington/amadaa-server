@@ -23,7 +23,7 @@ def get_schema_version(app):
 	with conn:
 		with conn.cursor() as cur:
 			cur.execute("""select version from am_schema_version
-			where app = %s""", (app))
+			where app = %s""", (app,))
 			ret = cur.fetchone()
 	conn.close()
 	return ret
@@ -38,3 +38,5 @@ def set_schema_version(app, version=1):
 			else:
 				cur.execute("""update am_schema_version set version = %s
 				where app = %s""", (version, app))
+				
+	
