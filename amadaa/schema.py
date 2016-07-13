@@ -24,9 +24,9 @@ def get_schema_version(app):
 		with conn.cursor() as cur:
 			cur.execute("""select version from am_schema_version
 			where app = %s""", (app,))
-			ret = cur.fetchone()
+			ver = cur.fetchone()
 	conn.close()
-	return ret
+	return ver
 
 def set_schema_version(app, version=1):
 	conn = amadaa.database.connection()
