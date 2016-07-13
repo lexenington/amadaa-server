@@ -7,14 +7,14 @@ from amadaa.base import Model
 register_uuid()
 
 class Role(Model):
-	def __init__(self):
-		super().__init__()
+	def __init__(self, id=None, rolename=None, parent=None):
+		super().__init__(id)
 		self._attribs.update({
 			'rolename': str,
 			'parent': uuid.UUID
 		})
-		self.rolename = None
-		self.parent = None
+		self.rolename = rolename
+		self.parent = parent
 		
 	def get(self, id):
 		conn = amadaa.database.connection()
@@ -56,31 +56,30 @@ class Role(Model):
 				cur.execute("""update am_role set rolename = %s, parent = %s
 				where role_pk = %s""", (self.rolename, self.parent_fk, self.id))
 		conn.close()
-		
-class RoleDirectory:
-	def id_exists(self, id):
-		conn = amadaa.database.connection()
-		with conn:
-			with conn.cursor() as cur:
-				cur.execute("select * from am_role where role_pk = %s", (id,))
-				rec = cur.fetchone()
-				ret = True if rec else False
-		conn.close()
-		return ret
 
-	def rolename_exists(self, rolename):
-		conn = amadaa.database.connection()
-		with conn:
-			with conn.cursor() as cur:
-				cur.execute("select * from am_role where rolename = %s", (rolename,))
-				rec = cur.fetchone()
-				ret = True if rec else False
-		conn.close()
-		return ret
+def role_id_exists(id):
+	conn = amadaa.database.connection()
+	with conn:
+		with conn.cursor() as cur:
+			cur.execute("select * from am_role where role_pk = %s", (id,))
+			rec = cur.fetchone()
+			ret = True if rec else False
+	conn.close()
+	return ret
+
+def rolename_exists(rolename):
+	conn = amadaa.database.connection()
+	with conn:
+		with conn.cursor() as cur:
+			cur.execute("select * from am_role where rolename = %s", (rolename,))
+			rec = cur.fetchone()
+			ret = True if rec else False
+	conn.close()
+	return ret
 
 class User(Model):
-	def __init__(self, id=None):
-		super().__init__()
+	def __init__(self, id=None, username=None, password=None, date_created=None, last_login=None, active=None):
+		super().__init__(id)
 		self._attribs.update({
 			'username': str,
 			'password': str,
@@ -88,11 +87,11 @@ class User(Model):
 			'last_login': datetime,
 			'active': bool
 		})
-		self.username = None
-		self.password = None
-		self.date_created = None
-		self.last_login = None
-		self.active = None
+		self.username = username
+		self.password = password
+		self.date_created = date_created
+		self.last_login = last_login
+		self.active = active
 
 	def get(self, id):
 		conn = amadaa.database.connection()
@@ -136,32 +135,28 @@ class User(Model):
 				where user_pk = %s""", (self.username, self.password, self.active, self.id))
 		conn.close()
 
-class UserDirectory:
-	def __init__(self):
-		pass
-		
-	def id_exists(self, uid):
-		conn = amadaa.database.connection()
-		with conn:
-			with conn.cursor() as cur:
-				cur.execute("select * from am_user where user_pk = %s", (uid,))
-				rec = cur.fetchone()
-				if rec:
-					ret = True
-				else:
-					ret = False
-		conn.close()
-		return ret
-	
-	def username_exists(self, username):
-		conn = amadaa.database.connection()
-		with conn:
-			with conn.cursor() as cur:
-				cur.execute("select * from am_user where username = %s", (username,))
-				rec = cur.fetchone()
-				if rec:
-					ret = True
-				else:
-					ret = False
-		conn.close()
-		return ret
+def user_id_exists(id):
+	conn = amadaa.database.connection()
+	with conn:
+		with conn.cursor() as cur:
+			cur.execute("select * from am_user where user_pk = %s", (id,))
+			rec = cur.fetchone()
+			if rec:
+				ret = True
+			else:
+				ret = False
+	conn.close()
+	return ret
+
+def username_exists(username):
+	conn = amadaa.database.connection()
+	with conn:
+		with conn.cursor() as cur:
+			cur.execute("select * from am_user where username = %s", (username,))
+			rec = cur.fetchone()
+			if rec:
+				ret = True
+			else:
+				ret = False
+	conn.close()
+	return ret
