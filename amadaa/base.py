@@ -13,9 +13,9 @@ class Controller:
 		return t.render(template_vars)
 		
 class Model:
-	def __init__(self):
+	def __init__(self, id=None):
 		self._attribs = { 'id': uuid.UUID }
-		self.id = None
+		self.id = id
 		
 	def __getattr__(self, key):
 		if key[0] == '_' or key in self._attribs:
