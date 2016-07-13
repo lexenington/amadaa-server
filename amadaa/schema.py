@@ -39,4 +39,7 @@ def set_schema_version(app, version=1):
 				cur.execute("""update am_schema_version set version = %s
 				where app = %s""", (version, app))
 				
-	
+def has_schema_version(app):
+	""" Check if the specified app has a schema version. Return True if it
+	does or False if it doesn't. """
+	return True if get_schema_version(app) else False
