@@ -33,10 +33,8 @@ if not has_schema_version(__package__):
 			
 	set_schema_version(__package__, 1)
 
-	
 if not rolename_exists('Fruit'):
-	r = Role()
-	r.rolename = 'Fruit'
+	r = Role(rolename='Fruit')
 	r.save()
 	
 # XXX: temporary
