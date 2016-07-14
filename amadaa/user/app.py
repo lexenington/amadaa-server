@@ -130,6 +130,9 @@ class User(Model):
 		
 	def add_role(self, role):
 		self.roles.add(role)
+		
+	def remove_role(self, role):
+		self.roles.remove(role)
 
 	def _insert(self):
 		conn = amadaa.database.connection()
