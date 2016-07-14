@@ -163,7 +163,7 @@ class User(Model):
 			for r in to_delete:
 				with conn.cursor() as cur:
 					cur.execute("""delete from am_user_role 
-					where user_role_pk = %s""", (r.id,))	
+					where user_fk = %s and role_fk = %s""", (self.id, r.id,))	
 		conn.close()
 
 	def _load_roles(self):
