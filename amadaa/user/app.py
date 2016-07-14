@@ -48,7 +48,7 @@ class Role(Model):
 				cur.execute("""insert into am_role(role_pk, rolename, parent_fk)
 				values(%s, %s, %s)""", (self.id, self.rolename, self.parent))
 		conn.close()
-		
+
 	def _update(self):
 		conn = amadaa.database.connection()
 		with conn:
@@ -85,13 +85,15 @@ class User(Model):
 			'password': str,
 			'date_created': datetime,
 			'last_login': datetime,
-			'active': bool
+			'active': bool,
+			'roles': set
 		})
 		self.username = username
 		self.password = password
 		self.date_created = date_created
 		self.last_login = last_login
 		self.active = active
+		self.roles = set()
 
 	def get(self, id):
 		conn = amadaa.database.connection()
@@ -104,6 +106,7 @@ class User(Model):
 				self.username = rec['username']
 				self.password = rec['password']
 		conn.close()
+		self._load_roles()
 
 	def get_by_username(self, username):
 		conn = amadaa.database.connection()
@@ -117,6 +120,7 @@ class User(Model):
 				self.password = rec['password']
 				self.active = rec['active']
 		conn.close()
+		self._load_roles()
 
 	def _insert(self):
 		conn = amadaa.database.connection()
@@ -134,6 +138,18 @@ class User(Model):
 				cur.execute("""update am_user set username = %s, password = %s, active = %s
 				where user_pk = %s""", (self.username, self.password, self.active, self.id))
 		conn.close()
+
+	def _load_roles(self):
+		self.roles = set()
+		conn = amadaa.database.connection()
+		with conn:
+			with conn.cursor() as cur:
+				cur.execute("""select role_fk from am_user_role
+				where user_fk = %s""", (self.id,))
+				for rec in cur.fetchall():
+					r = Role()
+					r.get(rec[0])
+					self.roles.add(r)
 
 def user_id_exists(id):
 	conn = amadaa.database.connection()
