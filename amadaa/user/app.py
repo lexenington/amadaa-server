@@ -129,6 +129,10 @@ class User(Model):
 				self.id = uuid.uuid4()
 				cur.execute("""insert into am_user(user_pk, username, password, active)
 				values(%s, %s, %s, %s)""", (self.id, self.username, self.password, self.active))
+			for r in self.roles:
+				with conn.cursor() as cur:
+					cur.execute("""insert into am_user_roles(user_role_pk, user_fk, role_fk)
+					values(%s, %s, %s)""", (uuid.uuid4(), self.id, r.id))
 		conn.close()
 
 	def _update(self):
@@ -137,6 +141,18 @@ class User(Model):
 			with conn.cursor() as cur:
 				cur.execute("""update am_user set username = %s, password = %s, active = %s
 				where user_pk = %s""", (self.username, self.password, self.active, self.id))
+			with conn.cursor() as cur:
+			old_roles = _get_role_set()
+			to_add = self.roles - old_roles
+			to_delete = old_roles - self.roles
+			for r in to_add:
+				with conn.cursor() as cur:
+					cur.execute("""insert into am_user_roles(user_role_pk, user_fk, role_fk")
+					values(%s, %s, %s)""", (uuid.uuid4(), self.id, r.id)
+			for r in to_delete:
+				with conn.cursor() as cur:
+					cur.execute("""delete from am_user roles 
+					where user_role_pk = %s""", (r.id,))	
 		conn.close()
 
 	def _load_roles(self):
@@ -150,6 +166,20 @@ class User(Model):
 					r = Role()
 					r.get(rec[0])
 					self.roles.add(r)
+					
+	def _get_role_set(self):
+		roles = set()
+		conn = amadaa.database.connection()
+		with conn:
+			with conn.cursor() as cur:
+				cur.execute("""select role_fk from am_user_role
+				where user_fk = %s""", (self.id,))
+				for rec = cur.fetchall():
+					r = Role()
+					r.get(rec[0])
+					roles.add(r)
+		conn.close()
+		return roles
 
 def user_id_exists(id):
 	conn = amadaa.database.connection()
