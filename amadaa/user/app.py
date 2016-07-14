@@ -56,6 +56,12 @@ class Role(Model):
 				cur.execute("""update am_role set rolename = %s, parent = %s
 				where role_pk = %s""", (self.rolename, self.parent_fk, self.id))
 		conn.close()
+	
+	def __eq__(self, other):
+		return self.id == other.id
+		
+	def __hash__(self):
+		return hash((self.id, self.rolename))
 
 def role_id_exists(id):
 	conn = amadaa.database.connection()
@@ -121,6 +127,9 @@ class User(Model):
 				self.active = rec['active']
 		conn.close()
 		self._load_roles()
+		
+	def add_role(self, role):
+		self.roles.add(role)
 
 	def _insert(self):
 		conn = amadaa.database.connection()
@@ -141,17 +150,16 @@ class User(Model):
 			with conn.cursor() as cur:
 				cur.execute("""update am_user set username = %s, password = %s, active = %s
 				where user_pk = %s""", (self.username, self.password, self.active, self.id))
-			with conn.cursor() as cur:
-			old_roles = _get_role_set()
+			old_roles = self._get_role_set()
 			to_add = self.roles - old_roles
 			to_delete = old_roles - self.roles
 			for r in to_add:
 				with conn.cursor() as cur:
-					cur.execute("""insert into am_user_roles(user_role_pk, user_fk, role_fk")
-					values(%s, %s, %s)""", (uuid.uuid4(), self.id, r.id)
+					cur.execute("""insert into am_user_role(user_role_pk, user_fk, role_fk)
+					values(%s, %s, %s)""", (uuid.uuid4(), self.id, r.id))
 			for r in to_delete:
 				with conn.cursor() as cur:
-					cur.execute("""delete from am_user roles 
+					cur.execute("""delete from am_user_role 
 					where user_role_pk = %s""", (r.id,))	
 		conn.close()
 
@@ -174,7 +182,7 @@ class User(Model):
 			with conn.cursor() as cur:
 				cur.execute("""select role_fk from am_user_role
 				where user_fk = %s""", (self.id,))
-				for rec = cur.fetchall():
+				for rec in cur.fetchall():
 					r = Role()
 					r.get(rec[0])
 					roles.add(r)
