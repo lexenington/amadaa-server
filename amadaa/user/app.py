@@ -25,7 +25,7 @@ class Role(Model):
 				rec = cur.fetchone()
 				self.id = rec['role_pk']
 				self.rolename = rec['rolename']
-				self.parent = rec['parent']
+				self.parent = rec['parent_fk']
 		conn.close()
 		
 	def get_by_rolename(self, rolename):
