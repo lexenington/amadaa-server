@@ -49,7 +49,7 @@ if not rolename_exists('Fruit'):
 	r.save()
 	
 if not username_exists('amadaa'):
-	u = User(username='amadaa')
+	u = User(username='amadaa', password='changeme')
 	u.save()
 
 conn.close()
