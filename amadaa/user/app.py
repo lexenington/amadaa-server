@@ -228,3 +228,16 @@ def user_has_role(username, rolename):
 			exists = True if rec else False
 			conn.close()
 			return exists
+
+def get_all_users():
+	users = []
+	conn = amadaa.database.connection()
+	with conn:
+		with conn.cursor() as cur:
+			cur.execute("select user_pk from am_user")
+			for row in cur.fetchall():
+				u = User()
+				u.get(row[0])
+				users.append(u)
+	conn.close()
+	return users
