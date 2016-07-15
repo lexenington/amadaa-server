@@ -84,7 +84,8 @@ def rolename_exists(rolename):
 	return ret
 
 class User(Model):
-	def __init__(self, id=None, username=None, password=None, date_created=None, last_login=None, active=None):
+	def __init__(self, id=None, username=None, password=None, date_created=None, 
+	last_login=None, active=True, hidden=False, deletable=False, deleted=False):
 		super().__init__(id)
 		self._attribs.update({
 			'username': str,
@@ -92,6 +93,9 @@ class User(Model):
 			'date_created': datetime,
 			'last_login': datetime,
 			'active': bool,
+			'hidden': bool,
+			'deletable': bool,
+			'deleted': bool,
 			'roles': set
 		})
 		self.username = username
@@ -99,6 +103,9 @@ class User(Model):
 		self.date_created = date_created
 		self.last_login = last_login
 		self.active = active
+		self.hidden = hidden
+		self.deletable = deletable
+		self.deleted = deleted
 		self.roles = set()
 
 	def get(self, id):
@@ -111,6 +118,11 @@ class User(Model):
 				self.id = rec['user_pk']
 				self.username = rec['username']
 				self.password = rec['password']
+				self.date_created = rec['date_created']
+				self.active = rec['active']
+				self.hidden = rec['hidden']
+				self.deletable = rec['deletable']
+				self.deleted = rec['deleted']
 		conn.close()
 		self._load_roles()
 
@@ -124,7 +136,11 @@ class User(Model):
 				self.id = rec['user_pk']
 				self.username = rec['username']
 				self.password = rec['password']
+				self.date_created = rec['date_created']
 				self.active = rec['active']
+				self.active = rec['hidden']
+				self.hidden = rec['deletable']
+				self.deleted = rec['deleted']
 		conn.close()
 		self._load_roles()
 		
@@ -139,8 +155,9 @@ class User(Model):
 		with conn:
 			with conn.cursor() as cur:
 				self.id = uuid.uuid4()
-				cur.execute("""insert into am_user(user_pk, username, password, active)
-				values(%s, %s, %s, %s)""", (self.id, self.username, self.password, self.active))
+				cur.execute("""insert into am_user(user_pk, username, password, active, hidden, deletable, deleted)
+				values(%s, %s, %s, %s, %s, %s, %s)""", (self.id, self.username, self.password, self.active, self.hidden, self.deletable,
+				self.deleted))
 			for r in self.roles:
 				with conn.cursor() as cur:
 					cur.execute("""insert into am_user_roles(user_role_pk, user_fk, role_fk)
@@ -151,8 +168,8 @@ class User(Model):
 		conn = amadaa.database.connection()
 		with conn:
 			with conn.cursor() as cur:
-				cur.execute("""update am_user set username = %s, password = %s, active = %s
-				where user_pk = %s""", (self.username, self.password, self.active, self.id))
+				cur.execute("""update am_user set username = %s, password = %s, active = %s, hidden = %s, deletable = %s, deleted = %s
+				where user_pk = %s""", (self.username, self.password, self.active, self.hidden, self.deletable, self.deleted, self.id))
 			old_roles = self._get_role_set()
 			to_add = self.roles - old_roles
 			to_delete = old_roles - self.roles

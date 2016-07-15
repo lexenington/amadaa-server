@@ -25,8 +25,10 @@ if not has_schema_version(__package__):
 				username varchar(30),
 				password varchar(40),
 				date_created timestamp,
-				last_login timestamp,
-				active bool, 
+				active bool not null default 't',
+				hidden bool not null default 'f',
+				deletable bool not null default 't',
+				deleted bool not null default 'f',
 				primary key(user_pk),
 				unique(username)
 				)""")
@@ -49,7 +51,7 @@ if not rolename_exists('Fruit'):
 	r.save()
 	
 if not username_exists('amadaa'):
-	u = User(username='amadaa', password='changeme')
+	u = User(username='amadaa', password='changeme', hidden=True, deletable=False)
 	u.save()
 
 conn.close()
