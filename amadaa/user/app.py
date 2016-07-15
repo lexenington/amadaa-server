@@ -251,7 +251,8 @@ def get_all_users():
 	conn = amadaa.database.connection()
 	with conn:
 		with conn.cursor() as cur:
-			cur.execute("select user_pk from am_user")
+			cur.execute("""select user_pk from am_user
+			where hidden = 'f' and deleted = 'f'""")
 			for row in cur.fetchall():
 				u = User()
 				u.get(row[0])
