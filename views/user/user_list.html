@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block body %}
+<p>Here is the user list.</p>
+
+{% for user in users %}
+{% if loop.first %}
+<table>
+	<tr>
+		<th>User</th>
+		<th>Actions</th>
+	</tr>
+{% endif %}
+<tr>
+	<td>{{ user.username }}</td>
+	<td><a href="/admin/user/edit/{{ user.id }}">Edit</a>, <a href="/admin/user/delete/{{ user.id }}">Delete</a></td>
+</tr>
+{% if loop.last %}
+</table>
+{% endif %}
+{% else %}
+<p>There are no users in the database.</p>
+{% endfor %}
+
+<p><a href="/admin/user/add">Add user</a></p>
+{% endblock %}
