@@ -155,8 +155,8 @@ class User(Model):
 		with conn:
 			with conn.cursor() as cur:
 				self.id = uuid.uuid4()
-				cur.execute("""insert into am_user(user_pk, username, password, active, hidden, deletable, deleted)
-				values(%s, %s, %s, %s, %s, %s, %s)""", (self.id, self.username, self.password, self.active, self.hidden, self.deletable,
+				cur.execute("""insert into am_user(user_pk, username, password, date_created, active, hidden, deletable, deleted)
+				values(%s, %s, %s, now(), %s, %s, %s, %s)""", (self.id, self.username, self.password, self.active, self.hidden, self.deletable,
 				self.deleted))
 			for r in self.roles:
 				with conn.cursor() as cur:
