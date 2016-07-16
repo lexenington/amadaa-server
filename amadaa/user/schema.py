@@ -46,9 +46,10 @@ if not has_schema_version(__package__):
 
 	set_schema_version(__package__, 1)
 
-if not rolename_exists('Fruit'):
-	r = Role(rolename='Fruit')
-	r.save()
+for rn in ('fruit', 'administrators'):
+	if not rolename_exists(rn):
+		r = Role(rolename=rn)
+		r.save()
 	
 if not username_exists('amadaa'):
 	u = User(username='amadaa', password='changeme', hidden=True, deletable=False)
