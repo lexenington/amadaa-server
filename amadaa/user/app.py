@@ -91,7 +91,6 @@ class User(Model):
 			'username': str,
 			'password': str,
 			'date_created': datetime.datetime,
-			'last_login': datetime.datetime,
 			'active': bool,
 			'hidden': bool,
 			'deletable': bool,
