@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block body %}
+  {% for message in messages %}
+    {% if loop.first %}
+      <div id="message-area">
+    {% endif %}
+    <div class="{{ message[0] }}"><p>{{ message[1] }}</p></div>
+    {% if loop.last %}
+      </div>
+    {% endif %}
+  {% endfor %}
+
+  {% block content %}{% endblock %}
+{% endblock %}
