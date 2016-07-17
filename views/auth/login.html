@@ -1,14 +1,12 @@
 {% extends "base.html" %}
 
 {% block body %}
-	<p>{{ auth_message }}</p>
-	<form method="post" action="/auth/login">
-		<label for="username">Username</label>
-		<input type="text" name="username"><br>
-			
-		<label for="password">Password</label>
-		<input type="password" name="password">
-			
-		<input type="submit">
-	</form>
+  <p>{{ auth_message }}</p>
+  <form method="post" action="/auth/login">
+    <label for="username">Username</label>
+    <input type="text" name="username"><br>
+    <label for="password">Password</label>
+    <input type="password" name="password">
+    <input type="submit">
+  </form>
 {% endblock %}
