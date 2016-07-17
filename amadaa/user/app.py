@@ -100,7 +100,6 @@ class User(Model):
 		self.username = username
 		self.password = password
 		self.date_created = date_created
-		self.last_login = last_login
 		self.active = active
 		self.hidden = hidden
 		self.deletable = deletable
