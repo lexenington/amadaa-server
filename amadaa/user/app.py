@@ -258,3 +258,11 @@ def get_all_users():
                 users.append(u)
     conn.close()
     return users
+
+def delete_user(id):
+    conn = amadaa.database.connection()
+    with conn:
+        with conn.cursor() as cur:
+            cur.execute("update am_user set deleted = 't' where user_pk = %s", (id,))
+
+            
