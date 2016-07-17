@@ -6,4 +6,4 @@ class DashboardController(Controller):
     @cherrypy.expose
     @login_required
     def index(self):
-    	return self.render_template('dashboard/dashboard.html')
+        return self.render_template('dashboard/dashboard.html')
