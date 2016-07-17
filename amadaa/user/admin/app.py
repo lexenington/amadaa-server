@@ -24,3 +24,23 @@ class UserAdminController(Controller):
             u.save()
             self.info('user %s created' % username)
             raise cherrypy.HTTPRedirect('/admin/user')
+
+    @cherrypy.expose
+    @cherrypy.popargs('id')
+    def delete(self, id, confirm=None, *args):
+        u = User()
+        u.get(id)
+        if 'user_to_delete' not in cherrypy.session:
+            cherrypy.session['user_to_delete'] = id
+            raise cherrypy.HTTPRedirect('/admin/user/delete/{0}'.format(u.id))
+        elif confirm == None:
+            return self.render_template('user/confirm_delete.html', {'user': u})
+        elif confirm == "1":
+            delete_user(id)
+            cherrypy.session.pop('user_to_delete')
+            self.info('User {0} deleted'.format(u.username))
+            raise cherrypy.HTTPRedirect('/admin/user')
+        else:
+            cherrypy.session.pop('user_to_delete')
+            self.info("User delete cancelled")
+            raise cherrypy.HTTPRedirect('/admin/user')
