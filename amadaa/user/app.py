@@ -1,5 +1,6 @@
 import datetime
 import uuid
+import cherrypy
 import amadaa.database
 from psycopg2 import IntegrityError
 from psycopg2.extras import DictCursor, register_uuid
@@ -152,6 +153,15 @@ class User(Model):
     def remove_role(self, role):
         self.roles.remove(role)
 
+    def login_history(self):
+        conn = amadaa.database.connection()
+        with conn:
+            with conn.cursor() as cur:
+                cur.execute("select * from am_user_session where user_fk = %", (self.id,))
+                history = cur.fetchall()
+        conn.close()
+        return history
+
     def _insert(self):
         conn = amadaa.database.connection()
         with conn:
@@ -272,3 +282,21 @@ def delete_user(id):
     with conn:
         with conn.cursor() as cur:
             cur.execute("update am_user set deleted = 't' where user_pk = %s", (id,))
+
+def open_user_session(user_id):
+    id = uuid.uuid4()
+    conn = amadaa.database.connection()
+    with conn:
+        with conn.cursor() as cur:
+            cur.execute("""insert into am_user_session(user_session_pk, user_fk, login_time)
+            values(%s, %s, %s)""", (id, user_id, datetime.datetime.now()))
+            cherrypy.session['user_session'] = id
+
+def close_user_session():
+    id = cherrypy.session['user_session']
+    conn = amadaa.database.connection()
+    with conn:
+        with conn.cursor() as cur:
+            cur.execute("""update am_user_session set logout_time = %s
+            where user_session_pk = %s""", (datetime.datetime.now(), id))
+            cherrypy.session.pop('user_session')

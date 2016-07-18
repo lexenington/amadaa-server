@@ -44,6 +44,17 @@ if not has_schema_version(__package__):
                     unique(user_fk, role_fk)
                 )""")
 
+    if not amadaa.database.table_exists('am_user_session'):
+        with conn:
+            with conn.cursor() as cur:
+                cur.execute("""create table am_user_session(
+                    user_session_pk uuid,
+                    user_fk uuid,
+                    login_time timestamp,
+                    logout_time timestamp,
+                    primary key(user_session_pk)
+                )""")
+
     set_schema_version(__package__, 1)
 
 for rn in ('fruit', 'administrators'):
