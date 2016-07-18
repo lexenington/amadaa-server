@@ -48,3 +48,10 @@ class UserAdminController(Controller):
             cherrypy.session.pop('user_to_delete')
             self.info("User delete cancelled")
             raise cherrypy.HTTPRedirect('/admin/user')
+
+    @cherrypy.expose
+    @cherrypy.popargs('id')
+    def view(self, id):
+        u = User()
+        u.get(id)
+        return self.render_template('/user/user_details.html', {'user': u})

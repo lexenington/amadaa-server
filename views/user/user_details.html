@@ -1,0 +1,7 @@
+{% extends "app_base.html" %}
+
+{% block content %}
+  <p><b>User:</b> {{ user.username }}</p>
+
+  <p><a href="/admin/user/edit/{{ user.id }}">Edit</a></p>
+{% endblock %}
