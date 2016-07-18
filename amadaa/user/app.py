@@ -1,10 +1,14 @@
 import datetime
 import uuid
 import amadaa.database
+from psycopg2 import IntegrityError
 from psycopg2.extras import DictCursor, register_uuid
 from amadaa.base import Model
 
 register_uuid()
+
+class UserExistsError(Exception):
+    pass
 
 class Role(Model):
     def __init__(self, id=None, rolename=None, parent=None):
@@ -153,9 +157,13 @@ class User(Model):
         with conn:
             with conn.cursor() as cur:
                 self.id = uuid.uuid4()
-                cur.execute("""insert into am_user(user_pk, username, password, date_created, active, hidden, deletable, deleted)
-                values(%s, %s, %s, now(), %s, %s, %s, %s)""", (self.id, self.username, self.password, self.active, self.hidden, self.deletable,
-                                                               self.deleted))
+                try:
+                    cur.execute("""insert into am_user(user_pk, username, password, date_created, active, hidden, deletable, deleted)
+                    values(%s, %s, %s, now(), %s, %s, %s, %s)""", (self.id, self.username, self.password, self.active, self.hidden, self.deletable,
+                                                                self.deleted))
+                except IntegrityError:
+                    raise UserExistsError('The user {0} already exists.'.format(self.username))
+
                 for r in self.roles:
                     with conn.cursor() as cur:
                         cur.execute("""insert into am_user_roles(user_role_pk, user_fk, role_fk)
@@ -264,5 +272,3 @@ def delete_user(id):
     with conn:
         with conn.cursor() as cur:
             cur.execute("update am_user set deleted = 't' where user_pk = %s", (id,))
-
-            

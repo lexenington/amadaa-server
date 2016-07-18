@@ -1,6 +1,6 @@
 import cherrypy
 from amadaa.base import Controller
-from amadaa.user.app import get_all_users, delete_user, User
+from amadaa.user.app import get_all_users, delete_user, User, UserExistsError
 
 class UserAdminController(Controller):
     @cherrypy.expose
@@ -20,10 +20,14 @@ class UserAdminController(Controller):
         if username == None and password == None:
             return self.render_template('user/edit_user.html')
         else:
-            u = User(username=username, password=password)
-            u.save()
-            self.info('user %s created' % username)
-            raise cherrypy.HTTPRedirect('/admin/user')
+            try:
+                u = User(username=username, password=password)
+                u.save()
+                self.info('user %s created' % username)
+                raise cherrypy.HTTPRedirect('/admin/user')
+            except UserExistsError as e:
+                self.error(e)
+                raise cherrypy.HTTPRedirect('/admin/user/add')
 
     @cherrypy.expose
     @cherrypy.popargs('id')
