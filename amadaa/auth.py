@@ -9,7 +9,7 @@ def authenticate(username, password):
     with conn:
         with conn.cursor() as cur:
             cur.execute("""select user_pk from am_user
-            where username = %s and password = %s""", (username, password))
+            where username = %s and password = %s and active='t' and deleted='f'""", (username, password))
             uid = cur.fetchone()
     conn.close()
     return uid
