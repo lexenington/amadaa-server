@@ -156,8 +156,8 @@ class User(Model):
     def login_history(self):
         conn = amadaa.database.connection()
         with conn:
-            with conn.cursor() as cur:
-                cur.execute("select * from am_user_session where user_fk = %", (self.id,))
+            with conn.cursor(cursor_factory=DictCursor) as cur:
+                cur.execute("select * from am_user_session where user_fk = %s", (self.id,))
                 history = cur.fetchall()
         conn.close()
         return history

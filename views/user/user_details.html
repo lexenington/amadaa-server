@@ -3,5 +3,28 @@
 {% block content %}
   <p><b>User:</b> {{ user.username }}</p>
 
-  <p><a href="/admin/user/edit/{{ user.id }}">Edit</a></p>
+  {% for history in login_history %}
+    {% if loop.first %}
+      <table>
+        <tr>
+          <th>Login time</th>
+          <th>Logout time</th>
+        </tr>
+    {% endif %}
+
+    <tr>
+      <td>{{ history.login_time.strftime("%Y-%m-%d %H:%M:%S") }}</td>
+      {% if history.logout_time is not none %}
+        <td>{{ history.logout_time.strftime("%Y-%m-%d %H:%M:%S") }}</td>
+      {% else %}
+        <td>-</td>
+      {% endif %}
+    </tr>
+
+    {% if loop.last %}
+      </table>
+    {% endif %}
+  {% endfor %}
+
+   <p><a href="/admin/user/edit/{{ user.id }}">Edit</a></p>
 {% endblock %}

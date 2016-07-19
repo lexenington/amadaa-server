@@ -54,4 +54,9 @@ class UserAdminController(Controller):
     def view(self, id):
         u = User()
         u.get(id)
-        return self.render_template('/user/user_details.html', {'user': u})
+        history = u.login_history()
+        print("login history: {0}".format(len(history)))
+        return self.render_template('/user/user_details.html', {
+            'user': u,
+            'login_history': history
+        })
