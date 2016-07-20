@@ -23,7 +23,7 @@ if not has_schema_version(__package__):
                 create table am_user(
                 user_pk uuid,
                 username varchar(30),
-                password varchar(40),
+                password varchar(60),
                 date_created timestamp,
                 active bool not null default 't',
                 hidden bool not null default 'f',

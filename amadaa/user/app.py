@@ -1,12 +1,16 @@
 import datetime
 import uuid
 import cherrypy
+import bcrypt
 import amadaa.database
 from psycopg2 import IntegrityError
 from psycopg2.extras import DictCursor, register_uuid
 from amadaa.base import Model
 
 register_uuid()
+
+def hash_password(pw):
+    return bcrypt.hashpw(pw, bcrypt.gensalt())
 
 class UserExistsError(Exception):
     pass
@@ -169,8 +173,8 @@ class User(Model):
                 self.id = uuid.uuid4()
                 try:
                     cur.execute("""insert into am_user(user_pk, username, password, date_created, active, hidden, deletable, deleted)
-                    values(%s, %s, %s, now(), %s, %s, %s, %s)""", (self.id, self.username, self.password, self.active, self.hidden, self.deletable,
-                                                                self.deleted))
+                    values(%s, %s, %s, now(), %s, %s, %s, %s)""", (self.id, self.username, hash_password(self.password), self.active,
+                    self.hidden, self.deletable, self.deleted))
                 except IntegrityError:
                     raise UserExistsError('The user {0} already exists.'.format(self.username))
 

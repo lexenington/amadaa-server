@@ -1,5 +1,6 @@
 import os
 import cherrypy
+import bcrypt
 from amadaa.base import Controller
 import amadaa.database
 from amadaa.user.app import open_user_session, close_user_session
@@ -8,9 +9,15 @@ def authenticate(username, password):
     conn = amadaa.database.connection()
     with conn:
         with conn.cursor() as cur:
-            cur.execute("""select user_pk from am_user
-            where username = %s and password = %s and active='t' and deleted='f'""", (username, password))
-            uid = cur.fetchone()
+            cur.execute("""select user_pk, password from am_user
+            where username = %s and active='t' and deleted='f'""", (username,))
+            user = cur.fetchone()
+            hashed_pw = user[1]
+
+            if bcrypt.checkpw(password, hashed_pw):
+                uid = user[0]
+            else:
+                uid = None
     conn.close()
     return uid
 
