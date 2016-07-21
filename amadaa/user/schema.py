@@ -64,6 +64,12 @@ for rn in ('fruit', 'administrators'):
 
 if not username_exists('amadaa'):
     u = User(username='amadaa', password='changeme', hidden=True, deletable=False)
+    u.add_role('fruit')
+    u.save()
+
+if not username_exists('admin'):
+    u = User(username='admin', password='changeme', hidden=False, deletable=False)
+    u.add_role('administrators')
     u.save()
 
 conn.close()

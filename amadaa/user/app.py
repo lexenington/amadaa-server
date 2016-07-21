@@ -152,7 +152,19 @@ class User(Model):
         self._load_roles()
 
     def add_role(self, role):
-        self.roles.add(role)
+        if type(role) == Role:
+            self.roles.add(role)
+        elif type(role) == str:
+            r = Role()
+            r.get_by_rolename(role)
+            self.roles.add(r)
+        elif type(role) == uuid.UUID:
+            r = Role()
+            r.get(role)
+            self.roles.add(r)
+        else:
+            # TODO: we should raise an error here
+            pass
 
     def remove_role(self, role):
         self.roles.remove(role)
@@ -180,7 +192,7 @@ class User(Model):
 
                 for r in self.roles:
                     with conn.cursor() as cur:
-                        cur.execute("""insert into am_user_roles(user_role_pk, user_fk, role_fk)
+                        cur.execute("""insert into am_user_role(user_role_pk, user_fk, role_fk)
                         values(%s, %s, %s)""", (uuid.uuid4(), self.id, r.id))
         conn.close()
 
