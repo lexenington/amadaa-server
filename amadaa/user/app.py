@@ -94,7 +94,7 @@ def rolename_exists(rolename):
 
 class User(Model):
     def __init__(self, id=None, username=None, password=None, date_created=None,
-    last_login=None, active=True, hidden=False, deletable=False, deleted=False):
+    last_login=None, active=True, hidden=False, deletable=True, deleted=False):
         super().__init__(id)
         self._attribs.update({
             'username': str,
