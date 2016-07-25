@@ -1,6 +1,7 @@
+import uuid
 import cherrypy
 from amadaa.base import Controller
-from amadaa.user.app import get_all_users, delete_user, User, UserExistsError
+from amadaa.user.app import get_user, get_all_users, delete_user, User, UserExistsError
 
 class UserAdminController(Controller):
     @cherrypy.expose
@@ -32,8 +33,7 @@ class UserAdminController(Controller):
     @cherrypy.expose
     @cherrypy.popargs('id')
     def delete(self, id, confirm=None, *args):
-        u = User()
-        u.get(id)
+        u = get_user(uuid.UUID(id))
         if 'user_to_delete' not in cherrypy.session:
             cherrypy.session['user_to_delete'] = id
             raise cherrypy.HTTPRedirect('/admin/user/delete/{0}'.format(u.id))
@@ -52,8 +52,7 @@ class UserAdminController(Controller):
     @cherrypy.expose
     @cherrypy.popargs('id')
     def view(self, id):
-        u = User()
-        u.get(id)
+        u = get_user(uuid.UUID(id))
         history = u.login_history()
         print("login history: {0}".format(len(history)))
         return self.render_template('/user/user_details.html', {

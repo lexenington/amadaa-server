@@ -267,6 +267,15 @@ def username_exists(username):
     conn.close()
     return ret
 
+def get_user(u):
+    print("Type of u: %s, value: %s" % (type(u), u))
+    user = User()
+    if type(u) == uuid.UUID:
+        user.get(u)
+    elif type(u) == str:
+        user.get_by_username(u)
+    return user
+
 def user_has_role(username, rolename):
     conn = amadaa.database.connection()
     with conn:
