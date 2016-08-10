@@ -15,6 +15,9 @@ def hash_password(pw):
 class UserExistsError(Exception):
     pass
 
+class UserDoesNotExist(Exception):
+    pass
+
 class Role(Model):
     def __init__(self, id=None, rolename=None, parent=None):
         super().__init__(id)
@@ -122,14 +125,17 @@ class User(Model):
                 cur.execute("""select * from am_user
                 where user_pk = %s""", (id,))
                 rec = cur.fetchone()
-                self.id = rec['user_pk']
-                self.username = rec['username']
-                self.password = rec['password']
-                self.date_created = rec['date_created']
-                self.active = rec['active']
-                self.hidden = rec['hidden']
-                self.deletable = rec['deletable']
-                self.deleted = rec['deleted']
+                if rec:
+                    self.id = rec['user_pk']
+                    self.username = rec['username']
+                    self.password = rec['password']
+                    self.date_created = rec['date_created']
+                    self.active = rec['active']
+                    self.hidden = rec['hidden']
+                    self.deletable = rec['deletable']
+                    self.deleted = rec['deleted']
+                else:
+                    raise UserDoesNotExist('User does not exist: %s' % (id,))
         conn.close()
         self._load_roles()
 
@@ -140,14 +146,17 @@ class User(Model):
                 cur.execute("""select * from am_user
                 where username = %s""", (username,))
                 rec = cur.fetchone()
-                self.id = rec['user_pk']
-                self.username = rec['username']
-                self.password = rec['password']
-                self.date_created = rec['date_created']
-                self.active = rec['active']
-                self.active = rec['hidden']
-                self.hidden = rec['deletable']
-                self.deleted = rec['deleted']
+                if rec:
+                    self.id = rec['user_pk']
+                    self.username = rec['username']
+                    self.password = rec['password']
+                    self.date_created = rec['date_created']
+                    self.active = rec['active']
+                    self.active = rec['hidden']
+                    self.hidden = rec['deletable']
+                    self.deleted = rec['deleted']
+                else:
+                    raise UserDoesNotExist('User does not exist: %s' % (username,))
         conn.close()
         self._load_roles()
 
@@ -266,6 +275,14 @@ def username_exists(username):
                 ret = False
     conn.close()
     return ret
+
+def get_user(u):
+    user = User()
+    if type(u) == uuid.UUID:
+        user.get(u)
+    elif type(u) == str:
+        user.get_by_username(u)
+    return user
 
 def user_has_role(username, rolename):
     conn = amadaa.database.connection()
