@@ -12,6 +12,8 @@ def authenticate(username, password):
             cur.execute("""select user_pk, password from am_user
             where username = %s and active='t' and deleted='f'""", (username,))
             user = cur.fetchone()
+            if user == None:
+                return None
             hashed_pw = user[1]
 
             if bcrypt.checkpw(password, hashed_pw):
