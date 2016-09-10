@@ -14,9 +14,11 @@ header {
 }
 
 footer {
-  margin-top: 20px;
+  margin-top: 0px;
+  padding: 30px 10px 15px 10px;
   text-align: center;
   font-size: small;
+  background-color: #333366;
 }
 
 footer a {
@@ -24,5 +26,5 @@ footer a {
 }
 
 footer a:hover {
-  background-color: #ffff00;
+  background-color: #ffffff;
 }
